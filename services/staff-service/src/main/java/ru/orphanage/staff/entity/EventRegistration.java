@@ -22,13 +22,18 @@ public class EventRegistration {
     @JoinColumn(name = "event_id", nullable = false)
     private Event event;
 
-    @Column(nullable = false)
-    private String volunteerName;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
 
-    @Column(nullable = false)
-    private String volunteerEmail;
+    private String name;
+    private String email;
+    private String phone;
+
+    @Column(columnDefinition = "TEXT")
+    private String notes;
 
     @CreationTimestamp
-    @Column(updatable = false)
+    @Column(name = "registered_at", updatable = false)
     private LocalDateTime registeredAt;
 }

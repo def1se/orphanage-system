@@ -8,7 +8,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "events", schema = "staff")
+@Table(name = "shelter_events", schema = "staff")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -22,16 +22,25 @@ public class Event {
     @Column(nullable = false)
     private String title;
 
-    @Column(nullable = false)
-    private LocalDate eventDate;
+    @Column(columnDefinition = "TEXT")
+    private String description;
 
-    @Column(nullable = false)
-    private String type;
+    @Column(name = "event_date", nullable = false)
+    private LocalDateTime eventDate;
 
-    @Column(nullable = false)
-    private Boolean openForVolunteers;
+    private String location;
+
+    @Column(name = "max_participants")
+    private Integer maxParticipants;
+
+    @Column(name = "image_url")
+    private String imageUrl;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "created_by")
+    private User createdBy;
 
     @CreationTimestamp
-    @Column(updatable = false)
+    @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 }

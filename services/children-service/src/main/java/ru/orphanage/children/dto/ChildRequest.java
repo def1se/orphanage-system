@@ -22,7 +22,7 @@ public class ChildRequest {
 
     @NotNull(message = "Дата рождения обязательна")
     @Past(message = "Дата рождения должна быть в прошлом")
-    private LocalDate dateOfBirth;
+    private LocalDate birthDate;
 
     @NotNull(message = "Пол обязателен")
     private Gender gender;
@@ -33,9 +33,10 @@ public class ChildRequest {
     @NotNull(message = "Дата поступления обязательна")
     private LocalDate admissionDate;
 
+    private String description;
     private String roomNumber;
     private String healthNotes;
     private String educationNotes;
-    private String photoUrl;
+    private String imageUrl;
     private Long responsibleEducatorId;
 }

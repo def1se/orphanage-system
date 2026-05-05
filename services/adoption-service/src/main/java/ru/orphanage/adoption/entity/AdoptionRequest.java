@@ -21,6 +21,9 @@ public class AdoptionRequest {
     @Column(name = "child_id", nullable = false)
     private Long childId;
 
+    @Column(name = "user_id")
+    private java.util.UUID userId;
+
     /** ФИО потенциального усыновителя / опекуна */
     @Column(name = "applicant_first_name", nullable = false, length = 100)
     private String applicantFirstName;
@@ -51,8 +54,11 @@ public class AdoptionRequest {
     @Column(name = "decision_date")
     private LocalDate decisionDate;
 
-    @Column(name = "notes", columnDefinition = "TEXT")
-    private String notes;
+    @Column(name = "message", columnDefinition = "TEXT")
+    private String message;
+
+    @Column(name = "admin_comment", columnDefinition = "TEXT")
+    private String adminComment;
 
     /** ID сотрудника-куратора из staff-service */
     @Column(name = "curator_staff_id")

@@ -6,7 +6,6 @@ const api = axios.create({
   headers: { 'Content-Type': 'application/json' },
 })
 
-// Добавляем Bearer токен к каждому запросу
 api.interceptors.request.use((config) => {
   if (keycloak.token) {
     config.headers.Authorization = `Bearer ${keycloak.token}`
@@ -14,9 +13,8 @@ api.interceptors.request.use((config) => {
   return config
 })
 
-// При 401 — пробуем обновить токен, иначе редиректим на логин
 api.interceptors.response.use(
-  (response) => response,
+  (r) => r,
   async (error) => {
     if (error.response?.status === 401) {
       try {
@@ -31,3 +29,9 @@ api.interceptors.response.use(
 )
 
 export default api
+
+// ── Public (no auth) ──
+export const publicApi = axios.create({
+  baseURL: '/api/v1',
+  headers: { 'Content-Type': 'application/json' },
+})

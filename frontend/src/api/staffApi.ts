@@ -1,42 +1,38 @@
+import { publicApi } from './axiosClient'
 import api from './axiosClient'
 
-export interface StaffMember {
-  id: number
-  firstName: string
-  lastName: string
-  middleName?: string
-  position: string
-  phone?: string
-  email?: string
-  hireDate: string
-  status: 'ACTIVE' | 'ON_LEAVE' | 'DISMISSED'
-  notes?: string
+export const eventsApi = {
+  getAll: () => publicApi.get('/staff/events').then(r => r.data),
+  getById: (id: number) => publicApi.get(`/staff/events/${id}`).then(r => r.data),
+  register: (eventId: number, data: { name: string; email: string; phone?: string; notes?: string }) =>
+    publicApi.post(`/staff/events/${eventId}/register`, data).then(r => r.data),
+  create: (data: any) => api.post('/staff/events', data).then(r => r.data),
+  update: (id: number, data: any) => api.put(`/staff/events/${id}`, data).then(r => r.data),
+  delete: (id: number) => api.delete(`/staff/events/${id}`),
+  getPdfReport: () => api.get('/staff/events/report/pdf', { responseType: 'blob' }).then(r => r.data),
 }
 
-export interface Page<T> {
-  content: T[]
-  totalElements: number
-  totalPages: number
-  number: number
+export const articlesApi = {
+  getPublished: (params?: any) => publicApi.get('/staff/articles/public', { params }).then(r => r.data),
+  getLatest: () => publicApi.get('/staff/articles/public/latest').then(r => r.data),
+  getById: (id: number) => publicApi.get(`/staff/articles/${id}`).then(r => r.data),
+  getAll: (params?: any) => api.get('/staff/articles', { params }).then(r => r.data),
+  create: (data: any) => api.post('/staff/articles', data).then(r => r.data),
+  update: (id: number, data: any) => api.put(`/staff/articles/${id}`, data).then(r => r.data),
+  delete: (id: number) => api.delete(`/staff/articles/${id}`),
 }
 
-export const staffApi = {
-  getAll: (page = 0, size = 20) =>
-    api.get<Page<StaffMember>>('/staff', { params: { page, size } }),
+export const volunteersApi = {
+  apply: (data: any) => api.post('/staff/volunteers', data).then(r => r.data),
+  getAll: (params?: any) => api.get('/staff/volunteers', { params }).then(r => r.data),
+  updateStatus: (id: number, status: string) => api.patch(`/staff/volunteers/${id}/status`, { status }).then(r => r.data),
+  delete: (id: number) => api.delete(`/staff/volunteers/${id}`),
+}
 
-  getById: (id: number) => api.get<StaffMember>(`/staff/${id}`),
-
-  getByPosition: (position: string, page = 0) =>
-    api.get<Page<StaffMember>>(`/staff/position/${position}`, { params: { page } }),
-
-  create: (data: Omit<StaffMember, 'id'>) => api.post<StaffMember>('/staff', data),
-
-  update: (id: number, data: Partial<StaffMember>) =>
-    api.put<StaffMember>(`/staff/${id}`, data),
-
-  delete: (id: number) => api.delete(`/staff/${id}`),
-  
-  getEvents: () => api.get<any[]>('/staff/events'),
-  registerForEvent: (eventId: number, data: { name: string, email: string }) => api.post(`/staff/events/${eventId}/register`, data),
-  downloadEventsPdf: () => api.get('/staff/events/report/pdf', { responseType: 'blob' }),
+export const usersApi = {
+  getAll: (params?: any) => api.get('/staff/users', { params }).then(r => r.data),
+  getById: (id: string) => api.get(`/staff/users/${id}`).then(r => r.data),
+  update: (id: string, data: any) => api.put(`/staff/users/${id}`, data).then(r => r.data),
+  updateRole: (id: string, role: string) => api.patch(`/staff/users/${id}/role`, { role }).then(r => r.data),
+  delete: (id: string) => api.delete(`/staff/users/${id}`),
 }

@@ -9,7 +9,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "medical_records", schema = "children")
+@Table(name = "child_medical_records", schema = "children")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -25,17 +25,17 @@ public class MedicalRecord {
     @JoinColumn(name = "child_id", nullable = false)
     private Child child;
 
-    @Column(name = "doctor_name", nullable = false)
-    private String doctorName;
+    @Column(name = "record_type", length = 50)
+    private String recordType; // MEDICAL, PSYCHOLOGICAL, SOCIAL
 
-    @Column(name = "diagnosis")
-    private String diagnosis;
+    @Column(name = "description", columnDefinition = "TEXT")
+    private String description;
 
-    @Column(name = "treatment_plan", columnDefinition = "TEXT")
-    private String treatmentPlan;
+    @Column(name = "record_date", nullable = false)
+    private LocalDateTime recordDate;
 
-    @Column(name = "visit_date", nullable = false)
-    private LocalDate visitDate;
+    @Column(name = "created_by")
+    private java.util.UUID createdBy;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)

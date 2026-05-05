@@ -38,8 +38,8 @@ public class Child {
     @Column(name = "middle_name", length = 100)
     private String middleName;
 
-    @Column(name = "date_of_birth", nullable = false)
-    private LocalDate dateOfBirth;
+    @Column(name = "birth_date", nullable = false)
+    private LocalDate birthDate;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "gender", nullable = false)
@@ -55,14 +55,17 @@ public class Child {
     @Column(name = "room_number", length = 20)
     private String roomNumber;
 
+    @Column(name = "description", columnDefinition = "TEXT")
+    private String description;
+
     @Column(name = "health_notes", columnDefinition = "TEXT")
     private String healthNotes;
 
     @Column(name = "education_notes", columnDefinition = "TEXT")
     private String educationNotes;
 
-    @Column(name = "photo_url")
-    private String photoUrl;
+    @Column(name = "image_url")
+    private String imageUrl;
 
     @Column(name = "responsible_educator_id")
     private Long responsibleEducatorId;

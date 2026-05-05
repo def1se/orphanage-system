@@ -50,9 +50,13 @@ public class ChildService {
                 .map(child -> PublicChildResponse.builder()
                         .id(child.getId())
                         .firstName(child.getFirstName())
-                        .age(Period.between(child.getDateOfBirth(), LocalDate.now()).getYears())
-                        .shortDescription("Добрый и отзывчивый ребенок, ищет заботливую семью.") // Masking sensitive data
-                        .photoUrl(child.getPhotoUrl())
+                        .age(child.getBirthDate() != null
+                                ? Period.between(child.getBirthDate(), LocalDate.now()).getYears()
+                                : 0)
+                        .shortDescription(child.getDescription() != null
+                                ? child.getDescription()
+                                : "Добрый ребёнок, ищет заботливую семью.")
+                        .photoUrl(child.getImageUrl())
                         .build());
     }
 

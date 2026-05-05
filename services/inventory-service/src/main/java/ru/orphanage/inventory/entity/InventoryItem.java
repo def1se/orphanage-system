@@ -10,45 +10,34 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "inventory_items", schema = "inventory")
+@Table(name = "shelter_needs", schema = "inventory")
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
-public class InventoryItem {
+public class ShelterNeed {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name", nullable = false, length = 200)
-    private String name;
+    @Column(name = "item_name", nullable = false, length = 200)
+    private String itemName;
 
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
-    @Enumerated(EnumType.STRING)
     @Column(name = "category", nullable = false)
-    private ItemCategory category;
+    private String category;
 
-    @Column(name = "quantity", nullable = false)
-    private Integer quantity;
+    @Column(name = "quantity_current", nullable = false)
+    private Integer quantityCurrent;
 
-    @Column(name = "unit", length = 50)
-    private String unit;
+    @Column(name = "quantity_needed")
+    private Integer quantityNeeded;
 
-    @Column(name = "min_quantity")
-    private Integer minQuantity;
+    @Column(name = "priority")
+    private String priority;
 
-    @Column(name = "unit_price", precision = 10, scale = 2)
-    private BigDecimal unitPrice;
-
-    @Column(name = "expiry_date")
-    private LocalDate expiryDate;
-
-    @Column(name = "supplier", length = 200)
-    private String supplier;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "status", nullable = false)
-    private ItemStatus status;
+    @Column(name = "price", precision = 10, scale = 2)
+    private BigDecimal price;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)

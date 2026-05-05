@@ -21,20 +21,24 @@ public class Volunteer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "first_name", nullable = false)
-    private String firstName;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
-    @Column(name = "last_name", nullable = false)
-    private String lastName;
-
-    @Column(name = "phone_number")
-    private String phoneNumber;
+    @Column(name = "status")
+    private String status;
 
     @Column(name = "skills", columnDefinition = "TEXT")
     private String skills;
 
-    @Column(name = "join_date", nullable = false)
-    private LocalDate joinDate;
+    @Column(name = "available_days")
+    private String availableDays;
+
+    @Column(name = "experience", columnDefinition = "TEXT")
+    private String experience;
+
+    @Column(name = "registration_date", nullable = false)
+    private LocalDateTime registrationDate;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)

@@ -1,46 +1,19 @@
+import { publicApi } from './axiosClient'
 import api from './axiosClient'
 
-export interface AdoptionRequest {
-  id: number
-  childId: number
-  applicantFirstName: string
-  applicantLastName: string
-  applicantMiddleName?: string
-  applicantPhone?: string
-  applicantEmail?: string
-  requestType: 'ADOPTION' | 'GUARDIANSHIP' | 'FOSTER_CARE'
-  status: 'SUBMITTED' | 'UNDER_REVIEW' | 'APPROVED' | 'REJECTED' | 'COMPLETED' | 'WITHDRAWN'
-  submissionDate: string
-  decisionDate?: string
-  notes?: string
-  curatorStaffId?: number
+export const happyStoriesApi = {
+  getAll: (params?: any) => publicApi.get('/adoptions/stories/public', { params }).then(r => r.data),
+  getById: (id: string) => publicApi.get(`/adoptions/stories/${id}`).then(r => r.data),
+  create: (data: any) => api.post('/adoptions/stories', data).then(r => r.data),
+  update: (id: string, data: any) => api.put(`/adoptions/stories/${id}`, data).then(r => r.data),
+  delete: (id: string) => api.delete(`/adoptions/stories/${id}`),
 }
 
-export interface Page<T> {
-  content: T[]
-  totalElements: number
-  totalPages: number
-  number: number
-}
-
-export const adoptionApi = {
-  getAll: (page = 0) => api.get<Page<AdoptionRequest>>('/adoptions', { params: { page } }),
-
-  getById: (id: number) => api.get<AdoptionRequest>(`/adoptions/${id}`),
-
-  getByStatus: (status: string, page = 0) =>
-    api.get<Page<AdoptionRequest>>(`/adoptions/status/${status}`, { params: { page } }),
-
-  create: (data: Omit<AdoptionRequest, 'id'>) => api.post<AdoptionRequest>('/adoptions', data),
-
-  updateStatus: (id: number, status: string) =>
-    api.patch<AdoptionRequest>(`/adoptions/${id}/status`, null, { params: { status } }),
-
-  update: (id: number, data: Partial<AdoptionRequest>) =>
-    api.put<AdoptionRequest>(`/adoptions/${id}`, data),
-
-  delete: (id: number) => api.delete(`/adoptions/${id}`),
-
-  submitApplication: (data: any) => api.post('/adoptions/applications', data),
-  getMyApplications: () => api.get<any[]>('/adoptions/applications/my'),
+export const adoptionRequestsApi = {
+  create: (data: any) => api.post('/adoptions/requests', data).then(r => r.data),
+  getMyRequests: () => api.get('/adoptions/requests/my').then(r => r.data),
+  getAll: (params?: any) => api.get('/adoptions/requests', { params }).then(r => r.data),
+  updateStatus: (id: number, status: string, comment: string) =>
+    api.patch(`/adoptions/requests/${id}/status`, { status, adminComment: comment }).then(r => r.data),
+  delete: (id: number) => api.delete(`/adoptions/requests/${id}`),
 }
