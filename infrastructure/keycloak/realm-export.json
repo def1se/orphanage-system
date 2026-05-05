@@ -1,0 +1,112 @@
+{
+  "realm": "orphanage",
+  "enabled": true,
+  "displayName": "Детский дом",
+  "loginTheme": "orphanage",
+  "accessTokenLifespan": 3600,
+  "ssoSessionMaxLifespan": 36000,
+  "registrationAllowed": true,
+  "roles": {
+    "realm": [
+      {
+        "name": "ROLE_ADMIN",
+        "description": "Администратор системы"
+      },
+      {
+        "name": "ROLE_DIRECTOR",
+        "description": "Директор детского дома"
+      },
+      {
+        "name": "ROLE_EDUCATOR",
+        "description": "Воспитатель"
+      },
+      {
+        "name": "ROLE_DOCTOR",
+        "description": "Врач"
+      },
+      {
+        "name": "ROLE_GUARDIAN",
+        "description": "Опекун / усыновитель"
+      },
+      {
+        "name": "ROLE_USER",
+        "description": "Зарегистрированный пользователь (волонтер, кандидат)"
+      }
+    ]
+  },
+  "clients": [
+    {
+      "clientId": "orphanage-app",
+      "enabled": true,
+      "publicClient": true,
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": true,
+      "redirectUris": [
+        "http://localhost:5173/*",
+        "http://localhost:8080/*"
+      ],
+      "webOrigins": [
+        "*"
+      ],
+      "defaultClientScopes": [
+        "openid",
+        "profile",
+        "email",
+        "roles"
+      ]
+    }
+  ],
+  "users": [
+    {
+      "username": "admin",
+      "email": "admin@orphanage.ru",
+      "firstName": "Системный",
+      "lastName": "Администратор",
+      "enabled": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "admin123",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "ROLE_ADMIN"
+      ]
+    },
+    {
+      "username": "director",
+      "email": "director@orphanage.ru",
+      "firstName": "Иван",
+      "lastName": "Петров",
+      "enabled": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "director123",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "ROLE_DIRECTOR"
+      ]
+    },
+    {
+      "username": "educator1",
+      "email": "educator1@orphanage.ru",
+      "firstName": "Мария",
+      "lastName": "Иванова",
+      "enabled": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "educator123",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "ROLE_EDUCATOR"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,83 @@
+/* Custom Keycloak Login Theme for Orphanage System */
+
+body {
+    background: #f8fafc;
+    background-image: radial-gradient(circle at 50% 0%, rgba(13,148,136,0.15) 0%, transparent 60%);
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    color: #0f172a;
+}
+
+.login-pf body {
+    background: #f8fafc;
+    background-image: radial-gradient(circle at 50% 0%, rgba(13,148,136,0.15) 0%, transparent 60%);
+    background-size: cover;
+}
+
+#kc-header-wrapper {
+    color: #0d9488;
+    font-size: 28px;
+    font-weight: 700;
+    text-shadow: none;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.login-pf-page .card-pf {
+    max-width: 450px;
+    margin: 0 auto;
+}
+
+.card-pf {
+    border-top: 4px solid #0d9488;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    border-radius: 12px;
+    background-color: #ffffff;
+    padding: 30px 40px;
+    margin-bottom: 20px;
+}
+
+.pf-c-button.pf-m-primary {
+    background-color: #0d9488;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 16px;
+    padding: 10px 0;
+    transition: background-color 0.2s ease;
+}
+
+.pf-c-button.pf-m-primary:hover {
+    background-color: #0f766e;
+}
+
+.pf-c-form-control {
+    border-radius: 6px;
+    border: 1px solid #e2e8f0;
+    background-color: #f1f5f9;
+    color: #0f172a;
+}
+
+.pf-c-form-control:focus {
+    border-color: #0d9488;
+    border-bottom-color: #0d9488;
+    box-shadow: 0 0 0 2px rgba(13,148,136,0.2);
+}
+
+#kc-form-options span a, #kc-registration span a {
+    color: #0d9488;
+    font-weight: 500;
+}
+
+#kc-form-options span a:hover, #kc-registration span a:hover {
+    color: #0f766e;
+    text-decoration: underline;
+}
+
+#kc-page-title {
+    color: #334155;
+    font-weight: 600;
+}
+
+.pf-c-form__label {
+    color: #475569;
+    font-weight: 500;
+}
