@@ -21,7 +21,7 @@ public class MaterialHelp {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "need_id", nullable = false)
-    private ShelterNeed need;
+    private InventoryItem need;
 
     @Column(nullable = false)
     private Integer quantity;
