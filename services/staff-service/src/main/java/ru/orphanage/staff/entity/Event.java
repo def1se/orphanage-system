@@ -33,6 +33,9 @@ public class Event {
     @Column(name = "max_participants")
     private Integer maxParticipants;
 
+    @Column(name = "open_for_volunteers")
+    private Boolean openForVolunteers = true;
+
     @Column(name = "image_url")
     private String imageUrl;
 
