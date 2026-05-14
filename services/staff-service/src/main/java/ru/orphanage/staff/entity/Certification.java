@@ -22,7 +22,7 @@ public class Certification {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "staff_member_id", nullable = false)
-    private Staff staff;
+    private StaffMember staff;
 
     @Column(name = "certification_name", nullable = false)
     private String certificationName;
