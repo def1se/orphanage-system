@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "shelter_needs", schema = "inventory")
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
-public class ShelterNeed {
+public class InventoryItem {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
