@@ -33,7 +33,7 @@ export function createStore<T extends { id: number | string }>(key: string, init
     const items = getAll()
     let updated: T | null = null
     const next = items.map(i => {
-      if (i.id === id) { updated = { ...i, ...patch } as T; return updated }
+      if (String(i.id) === String(id)) { updated = { ...i, ...patch } as T; return updated }
       return i
     })
     save(next)
@@ -41,7 +41,7 @@ export function createStore<T extends { id: number | string }>(key: string, init
   }
 
   const remove = (id: number | string) => {
-    save(getAll().filter(i => i.id !== id))
+    save(getAll().filter(i => String(i.id) !== String(id)))
   }
 
   return { getAll, add, update, remove, save }

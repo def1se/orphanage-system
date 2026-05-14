@@ -55,7 +55,7 @@ export default function AdminChildrenPage() {
         <p>Создание, редактирование и просмотр карточек детей</p>
       </div>
       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 20, gap: 12, flexWrap: 'wrap' }}>
-        <input className="search-input" placeholder="🔍 Поиск по имени..." value={search}
+        <input className="search-input" placeholder="Поиск по имени..." value={search}
           onChange={e => setSearch(e.target.value)} style={{ flex: 1, maxWidth: 360 }} />
         <button className="btn btn-primary" onClick={openCreate}>+ Добавить воспитанника</button>
       </div>

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import keycloak from '../../keycloak'
 import { Link } from 'react-router-dom'
+import { volunteersStore } from '../../store/dataStore'
 
 const SKILLS_OPTIONS = ['Обучение/репетиторство', 'Спорт и активный отдых', 'Музыка и творчество', 'Психологическая поддержка', 'Организация мероприятий', 'Медицина', 'IT и технологии', 'Кулинария', 'Другое']
 const DAYS_OPTIONS = ['Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота', 'Воскресенье']
@@ -20,6 +21,20 @@ export default function VolunteerPage() {
     if (!isAuth) { keycloak.login(); return }
     setLoading(true)
     await new Promise(r => setTimeout(r, 1000))
+
+    // Сохраняем заявку в store — появится в панели администратора
+    volunteersStore.add({
+      userId: parsed?.sub ?? null,
+      name: `${form.firstName || parsed?.given_name || ''} ${form.lastName || parsed?.family_name || ''}`.trim(),
+      email: form.email || parsed?.email || '',
+      phone: form.phone,
+      skills: form.skills.join(', ') || 'Не указаны',
+      availableDays: form.availableDays.join(', ') || 'Не указаны',
+      status: 'PENDING',
+      createdAt: new Date().toLocaleDateString('ru-RU'),
+      experience: form.experience,
+    })
+
     setLoading(false)
     setSuccess(true)
   }

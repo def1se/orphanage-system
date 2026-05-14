@@ -6,9 +6,16 @@ const PRIORITIES: Record<string, string> = { HIGH: 'Срочно', MEDIUM: 'Ну
 const P_COLORS: Record<string, string> = { HIGH: 'badge-red', MEDIUM: 'badge-yellow', LOW: 'badge-blue' }
 const EMPTY = { itemName: '', category: 'CLOTHING', quantityNeeded: 10, quantityCurrent: 0, priority: 'MEDIUM', price: 0 }
 
+const ORDERS_KEY = 'material_orders'
+const readOrders = (): any[] => {
+  try { return JSON.parse(localStorage.getItem(ORDERS_KEY) || '[]') } catch { return [] }
+}
+const writeOrders = (items: any[]) => localStorage.setItem(ORDERS_KEY, JSON.stringify(items))
+
 export default function AdminNeedsPage() {
-  const [, forceUpdate] = useState(0)
-  const refresh = () => forceUpdate(n => n + 1)
+  const [needsTick, setNeedsTick] = useState(0)
+  const [orders, setOrders] = useState<any[]>(() => readOrders())
+  const [activeTab, setActiveTab] = useState<'needs' | 'orders'>('needs')
   const [modal, setModal] = useState<'create' | 'edit' | null>(null)
   const [editing, setEditing] = useState<any>(null)
   const [form, setForm] = useState<any>(EMPTY)
@@ -19,26 +26,48 @@ export default function AdminNeedsPage() {
     e.preventDefault()
     if (modal === 'create') needsStore.add(form)
     else needsStore.update(editing.id, form)
-    refresh()
+    setNeedsTick(n => n + 1)
     setModal(null)
   }
 
+  const removeOrder = (idx: number) => {
+    const updated = orders.filter((_, i) => i !== idx)
+    writeOrders(updated)
+    setOrders([...updated])
+  }
+
+  const updateOrderStatus = (idx: number, status: string) => {
+    const updated = orders.map((o, i) => i === idx ? { ...o, status } : o)
+    writeOrders(updated)
+    setOrders(updated)
+  }
+
+  const pendingCount = orders.filter(o => o.status === 'PENDING').length
+
   return (
-    <div>
+    <div key={needsTick}>
       <div className="admin-header">
         <h2>📦 Потребности детского дома</h2>
         <p>Управление списком необходимых вещей и предметов</p>
       </div>
-      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 20 }}>
-        <button className="btn btn-primary" onClick={() => { setForm(EMPTY); setModal('create') }}>+ Добавить позицию</button>
+
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
+        <div className="tabs" style={{ margin: 0 }}>
+          <button className={`tab ${activeTab === 'needs' ? 'active' : ''}`} onClick={() => setActiveTab('needs')}>📦 Справочник потребностей</button>
+          <button className={`tab ${activeTab === 'orders' ? 'active' : ''}`} onClick={() => setActiveTab('orders')}>🚚 Заказы помощи ({pendingCount} нов.)</button>
+        </div>
+        {activeTab === 'needs' && (
+          <button className="btn btn-primary" onClick={() => { setForm(EMPTY); setModal('create') }}>+ Добавить позицию</button>
+        )}
       </div>
 
-      {needs.length === 0 && (
-        <div className="empty-state"><div className="empty-icon">📦</div><div className="empty-title">Список потребностей пуст</div></div>
-      )}
-
       <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-        {needs.map((n: any) => {
+        {/* ─── TAB: NEEDS ─── */}
+        {activeTab === 'needs' && needs.length === 0 && (
+          <div className="empty-state"><div className="empty-icon">📦</div><div className="empty-title">Список потребностей пуст</div></div>
+        )}
+
+        {activeTab === 'needs' && needs.map((n: any) => {
           const pct = n.quantityNeeded > 0 ? Math.round((n.quantityCurrent / n.quantityNeeded) * 100) : 0
           return (
             <div key={n.id} className={`card ${n.priority === 'HIGH' ? 'priority-high' : n.priority === 'MEDIUM' ? 'priority-medium' : ''}`} style={{ padding: 20 }}>
@@ -61,12 +90,71 @@ export default function AdminNeedsPage() {
                 </div>
                 <div style={{ display: 'flex', gap: 6 }}>
                   <button className="btn btn-secondary btn-sm" onClick={() => { setEditing(n); setForm({ ...n }); setModal('edit') }}>✏️</button>
-                  <button className="btn btn-danger btn-sm" onClick={() => { if (confirm('Удалить?')) { needsStore.remove(n.id); refresh() } }}>🗑️</button>
+                  <button className="btn btn-danger btn-sm" onClick={() => { if (confirm('Удалить?')) { needsStore.remove(n.id); setNeedsTick(t => t + 1) } }}>🗑️</button>
                 </div>
               </div>
             </div>
           )
         })}
+
+        {/* ─── TAB: ORDERS ─── */}
+        {activeTab === 'orders' && orders.length === 0 && (
+          <div className="empty-state"><div className="empty-icon">📭</div><div className="empty-title">Заказов пока нет</div></div>
+        )}
+
+        {activeTab === 'orders' && orders.map((o: any, idx: number) => (
+          <div key={idx} className="card" style={{ padding: 20 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12 }}>
+              <div>
+                <div style={{ fontWeight: 600, fontSize: 16, marginBottom: 4 }}>Заказ #{String(o.id).slice(-6)}</div>
+                <div style={{ fontSize: 13, color: 'var(--text-muted)' }}>{o.createdAt}</div>
+              </div>
+              <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                <select
+                  className="form-control"
+                  style={{ padding: '4px 8px', fontSize: 13, height: 'auto', minWidth: 140 }}
+                  value={o.status}
+                  onChange={e => updateOrderStatus(idx, e.target.value)}
+                >
+                  <option value="PENDING">⏳ В обработке</option>
+                  <option value="CONFIRMED">🤝 Подтверждён</option>
+                  <option value="DELIVERED">✅ Доставлен</option>
+                  <option value="CANCELLED">❌ Отменён</option>
+                </select>
+                <button className="btn btn-danger btn-sm" onClick={() => removeOrder(idx)}>🗑️</button>
+              </div>
+            </div>
+
+            <div style={{ display: 'flex', gap: 24, marginBottom: 16, padding: '12px', background: 'rgba(255,255,255,0.03)', borderRadius: 8 }}>
+              <div>
+                <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>Заказчик:</div>
+                <div style={{ fontSize: 14 }}>{o.userName}</div>
+                <div style={{ fontSize: 13, color: 'var(--text-secondary)' }}>{o.userEmail}</div>
+              </div>
+              <div>
+                <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>Способ:</div>
+                <div style={{ fontSize: 14 }}>{o.deliveryMethod === 'DELIVERY' ? '🚚 Доставка' : '🚶 Самовывоз'}</div>
+                {o.address && <div style={{ fontSize: 13, color: 'var(--text-secondary)' }}>{o.address}</div>}
+              </div>
+              <div>
+                <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>Сумма:</div>
+                <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--primary-light)' }}>{(o.totalAmount || 0).toLocaleString()} ₽</div>
+              </div>
+            </div>
+
+            <div style={{ borderTop: '1px solid var(--border)', paddingTop: 12 }}>
+              <div style={{ fontSize: 12, color: 'var(--text-muted)', marginBottom: 8 }}>Состав заказа:</div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                {(o.items || []).map((item: any, i: number) => (
+                  <div key={i} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13 }}>
+                    <span>{item.itemName}</span>
+                    <span style={{ fontWeight: 600 }}>{item.quantity} шт.</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        ))}
       </div>
 
       {modal && (

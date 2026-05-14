@@ -1,5 +1,6 @@
 import { Routes, Route, NavLink, Link, Outlet, useNavigate } from 'react-router-dom'
 import keycloak from './keycloak'
+import { useAuth } from './hooks/useAuth'
 // Public pages
 import PublicLandingPage from './pages/public/PublicLandingPage'
 import ChildrenCatalogPage from './pages/public/ChildrenCatalogPage'
@@ -10,6 +11,7 @@ import ArticlesPage from './pages/public/ArticlesPage'
 import ProfilePage from './pages/public/ProfilePage'
 import VolunteerPage from './pages/public/VolunteerPage'
 import AdoptionRequestPage from './pages/public/AdoptionRequestPage'
+import ChildProfilePage from './pages/public/ChildProfilePage'
 // Admin pages
 import AdminDashboard from './pages/admin/AdminDashboard'
 import AdminChildrenPage from './pages/admin/AdminChildrenPage'
@@ -19,10 +21,11 @@ import AdminEventsPage from './pages/admin/AdminEventsPage'
 import AdminNeedsPage from './pages/admin/AdminNeedsPage'
 import AdminArticlesPage from './pages/admin/AdminArticlesPage'
 import AdminVolunteersPage from './pages/admin/AdminVolunteersPage'
+import AdminDonationsPage from './pages/admin/AdminDonationsPage'
 
 const NAV_LINKS = [
   { to: '/', label: 'Главная', exact: true },
-  { to: '/children', label: 'Дети' },
+  { to: '/children', label: 'Поиск ребёнка' },
   { to: '/stories', label: 'Истории' },
   { to: '/events', label: 'Мероприятия' },
   { to: '/help', label: 'Помочь' },
@@ -39,14 +42,13 @@ const ADMIN_NAV = [
   { section: 'Контент' },
   { to: '/admin/articles', label: 'Статьи', icon: '📰' },
   { to: '/admin/needs', label: 'Потребности', icon: '📦' },
+  { to: '/admin/donations', label: 'Пожертвования', icon: '💰' },
   { to: '/admin/users', label: 'Пользователи', icon: '👥' },
 ]
 
 function PublicLayout() {
-  const isAuthenticated = keycloak.authenticated
-  const parsed = keycloak.tokenParsed as any
-  const username = parsed?.preferred_username ?? 'Профиль'
-  const roles: string[] = parsed?.realm_access?.roles ?? []
+  const { isAuth: isAuthenticated, username: rawUsername, roles } = useAuth()
+  const username = rawUsername || 'Профиль'
   const isAdmin = roles.includes('ROLE_ADMIN') || roles.includes('ROLE_STAFF') || roles.includes('ROLE_DIRECTOR')
 
   return (
@@ -186,6 +188,7 @@ function AdminLayout() {
           <Route path="needs" element={<AdminNeedsPage />} />
           <Route path="articles" element={<AdminArticlesPage />} />
           <Route path="volunteers" element={<AdminVolunteersPage />} />
+          <Route path="donations" element={<AdminDonationsPage />} />
         </Routes>
       </main>
     </div>
@@ -198,6 +201,7 @@ export default function App() {
       <Route element={<PublicLayout />}>
         <Route index element={<PublicLandingPage />} />
         <Route path="children" element={<ChildrenCatalogPage />} />
+        <Route path="children/:id" element={<ChildProfilePage />} />
         <Route path="stories" element={<HappyStoriesPage />} />
         <Route path="events" element={<EventsPage />} />
         <Route path="help" element={<HowToHelpPage />} />

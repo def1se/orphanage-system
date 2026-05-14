@@ -40,14 +40,43 @@ export default function AdminEventsPage() {
   }
 
   const downloadReport = () => {
-    const rows = events.map((e: any) =>
-      `${e.title}\nДата: ${formatDate(e.eventDate)}\nМесто: ${e.location}\nУчастников: ${e.registered ?? 0}/${e.maxParticipants}\n`
-    ).join('\n')
-    const content = `ОТЧЁТ ПО МЕРОПРИЯТИЯМ\nСформирован: ${new Date().toLocaleString('ru-RU')}\n\n${rows}`
-    const blob = new Blob([content], { type: 'text/plain;charset=utf-8' })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement('a'); a.href = url; a.download = 'events_report.txt'; a.click()
-    URL.revokeObjectURL(url)
+    const now = new Date().toLocaleString('ru-RU')
+    const rows = events.map((e: any, i: number) => `
+      <tr>
+        <td>${i + 1}</td>
+        <td>${e.title}</td>
+        <td>${formatDate(e.eventDate)}</td>
+        <td>${e.location || 'Не указано'}</td>
+        <td style="text-align:right">${e.registered ?? 0} / ${e.maxParticipants}</td>
+      </tr>`).join('')
+
+    const html = `<!DOCTYPE html><html lang="ru"><head><meta charset="UTF-8">
+    <title>Отчёт по мероприятиям</title>
+    <style>
+      body{font-family:Arial,sans-serif;padding:28px;color:#1e293b}
+      h1{color:#7c3aed;margin-bottom:4px}
+      .sub{color:#64748b;font-size:13px;margin-bottom:24px}
+      table{width:100%;border-collapse:collapse;font-size:13px}
+      th{background:#7c3aed;color:#fff;padding:9px 12px;text-align:left}
+      td{padding:8px 12px;border-bottom:1px solid #e2e8f0}
+      tr:nth-child(even) td{background:#f8fafc}
+      .footer{margin-top:24px;font-size:12px;color:#94a3b8;text-align:center}
+      @media print{thead{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+    </style></head><body>
+    <h1>📅 ЦССВ «Светлый путь»</h1>
+    <div class="sub">Отчёт по запланированным мероприятиям · Сформирован: ${now}</div>
+    <table>
+      <thead><tr><th>#</th><th>Название</th><th>Дата и время</th><th>Место проведения</th><th>Заполнено</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+    <div class="footer">г. Москва, ул. Примерная, д. 1 · info@svetly-put.ru</div>
+    <script>window.onload=function(){window.print()}</script>
+    </body></html>`
+
+    const win = window.open('', '_blank', 'width=900,height=650')
+    if (!win) { alert('Разрешите всплывающие окна в браузере'); return }
+    win.document.write(html)
+    win.document.close()
   }
 
   return (

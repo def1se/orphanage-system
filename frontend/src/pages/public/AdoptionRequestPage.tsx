@@ -139,8 +139,8 @@ export default function AdoptionRequestPage() {
                 </div>
               </div>
               <div className="form-group">
-                <label className="form-label">Сопроводительное письмо</label>
-                <textarea className="form-control" rows={5} value={form.message}
+                <label className="form-label">Сопроводительное письмо *</label>
+                <textarea className="form-control" rows={5} required value={form.message}
                   onChange={e => setForm(f => ({ ...f, message: e.target.value }))}
                   placeholder="Расскажите немного о себе, своей семье и причинах обращения..." />
               </div>

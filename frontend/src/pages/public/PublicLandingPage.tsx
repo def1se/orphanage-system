@@ -40,7 +40,7 @@ export default function PublicLandingPage() {
             <>
               <p>Добро пожаловать, <strong>{username}</strong>! Посмотрите, что нового в нашей системе.</p>
               <div className="hero-actions">
-                <Link to="/children" className="btn btn-primary btn-lg">👶 Каталог детей</Link>
+                <Link to="/children" className="btn btn-primary btn-lg">Поиск ребёнка</Link>
                 <Link to="/profile" className="btn btn-secondary btn-lg">👤 Личный кабинет</Link>
               </div>
             </>
@@ -48,7 +48,7 @@ export default function PublicLandingPage() {
             <>
               <p>Мы помогаем детям-сиротам обрести семью, а людям — найти способ изменить чью-то жизнь к лучшему.</p>
               <div className="hero-actions">
-                <Link to="/children" className="btn btn-primary btn-lg">👶 Познакомиться с детьми</Link>
+                <Link to="/children" className="btn btn-primary btn-lg">Поиск ребёнка</Link>
                 <Link to="/help" className="btn btn-secondary btn-lg">💛 Помочь детскому дому</Link>
               </div>
             </>
@@ -165,7 +165,7 @@ export default function PublicLandingPage() {
               <p style={{ color: 'var(--text-secondary)', marginBottom: 28 }}>
                 Зарегистрируйтесь, чтобы оставить заявку на знакомство с ребёнком, записаться на мероприятие или стать волонтёром.
               </p>
-              <button className="btn btn-primary btn-lg" onClick={() => keycloak.login()}>
+              <button className="btn btn-primary btn-lg" onClick={() => keycloak.register({ redirectUri: window.location.origin })}>
                 Зарегистрироваться
               </button>
             </div>

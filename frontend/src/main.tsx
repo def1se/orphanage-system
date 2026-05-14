@@ -12,7 +12,7 @@ const queryClient = new QueryClient({
 
 keycloak
   .init({ onLoad: 'check-sso', checkLoginIframe: false, pkceMethod: 'S256' })
-  .then((authenticated) => {
+  .then(() => {
     ReactDOM.createRoot(document.getElementById('root')!).render(
       <React.StrictMode>
         <QueryClientProvider client={queryClient}>

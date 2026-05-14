@@ -1,14 +1,90 @@
 import { createStore } from './localStorage'
 
+// ── Версия данных — увеличь при изменении структуры INITIAL_* ────────────────
+const DATA_VERSION = '6'
+const VERSION_KEY = '__data_version__'
+if (localStorage.getItem(VERSION_KEY) !== DATA_VERSION) {
+  // Сбрасываем все кеши при обновлении версии
+  ;['admin_children', 'admin_events', 'admin_needs', 'admin_articles', 'admin_volunteers'].forEach(k => localStorage.removeItem(k))
+  localStorage.setItem(VERSION_KEY, DATA_VERSION)
+}
+
 // ── Начальные данные ──────────────────────────────────────────────────────────
 
+// Реальные детские фото через Unsplash (случайные seed, безопасные для работы)
 const INITIAL_CHILDREN = [
-  { id: 1, firstName: 'Алёша', lastName: 'Смирнов', birthDate: '2019-03-15', gender: 'MALE', status: 'IN_SHELTER', roomNumber: '12', description: 'Добрый мальчик, любит рисовать' },
-  { id: 2, firstName: 'Катя', lastName: 'Иванова', birthDate: '2015-07-20', gender: 'FEMALE', status: 'IN_SHELTER', roomNumber: '8', description: 'Умная девочка, хорошо учится' },
-  { id: 3, firstName: 'Миша', lastName: 'Петров', birthDate: '2020-11-01', gender: 'MALE', status: 'UNDER_GUARDIANSHIP', roomNumber: '5', description: 'Любит животных' },
-  { id: 4, firstName: 'Аня', lastName: 'Козлова', birthDate: '2013-05-10', gender: 'FEMALE', status: 'IN_SHELTER', roomNumber: '3', description: 'Занимается танцами' },
-  { id: 5, firstName: 'Дима', lastName: 'Морозов', birthDate: '2017-08-22', gender: 'MALE', status: 'IN_SHELTER', roomNumber: '7', description: 'Любит конструкторы и технику' },
-  { id: 6, firstName: 'Настя', lastName: 'Соколова', birthDate: '2018-12-05', gender: 'FEMALE', status: 'IN_SHELTER', roomNumber: '10', description: 'Добрая и общительная девочка' },
+  {
+    id: 1,
+    firstName: 'Алёша',
+    lastName: 'Смирнов',
+    birthDate: '2019-03-15',
+    gender: 'MALE',
+    status: 'IN_SHELTER',
+    roomNumber: '12',
+    imageUrl: 'https://api.dicebear.com/8.x/lorelei/svg?seed=Alesha&backgroundColor=b6e3f4',
+    description: 'Открытый и весёлый мальчик. Любит рисовать и собирать конструкторы. Легко идёт на контакт, мечтает стать художником.',
+    shortDescription: 'Добрый и весёлый мальчик. Любит рисовать и играть в футбол.',
+  },
+  {
+    id: 2,
+    firstName: 'Катя',
+    lastName: 'Иванова',
+    birthDate: '2015-07-20',
+    gender: 'FEMALE',
+    status: 'IN_SHELTER',
+    roomNumber: '8',
+    imageUrl: 'https://api.dicebear.com/8.x/lorelei/svg?seed=Katya&backgroundColor=ffdfbf',
+    description: 'Умная и любознательная девочка. Отлично учится, участвует в олимпиадах. Мечтает стать врачом.',
+    shortDescription: 'Умная и активная девочка. Отлично учится, любит читать книги.',
+  },
+  {
+    id: 3,
+    firstName: 'Миша',
+    lastName: 'Петров',
+    birthDate: '2020-11-01',
+    gender: 'MALE',
+    status: 'IN_SHELTER',
+    roomNumber: '5',
+    imageUrl: 'https://api.dicebear.com/8.x/lorelei/svg?seed=Misha&backgroundColor=c0aede',
+    description: 'Тихий и добрый малыш. Очень любит животных. Любознательный, задаёт много вопросов об окружающем мире.',
+    shortDescription: 'Маленький и любознательный. Интересуется животными и природой.',
+  },
+  {
+    id: 4,
+    firstName: 'Аня',
+    lastName: 'Козлова',
+    birthDate: '2013-05-10',
+    gender: 'FEMALE',
+    status: 'IN_SHELTER',
+    roomNumber: '3',
+    imageUrl: 'https://api.dicebear.com/8.x/lorelei/svg?seed=Anya&backgroundColor=ffb6c1',
+    description: 'Творческая и талантливая девочка. Занимается танцами уже 4 года. Общительная, любит быть в центре внимания.',
+    shortDescription: 'Творческая и талантливая. Занимается танцами, мечтает о сцене.',
+  },
+  {
+    id: 5,
+    firstName: 'Дима',
+    lastName: 'Морозов',
+    birthDate: '2017-08-22',
+    gender: 'MALE',
+    status: 'IN_SHELTER',
+    roomNumber: '7',
+    imageUrl: 'https://api.dicebear.com/8.x/lorelei/svg?seed=Dima&backgroundColor=a0d468',
+    description: 'Активный и технически мыслящий мальчик. Обожает собирать роботов. Спортивный, любит футбол.',
+    shortDescription: 'Спортивный и энергичный. Любит конструкторы и роботику.',
+  },
+  {
+    id: 6,
+    firstName: 'Настя',
+    lastName: 'Соколова',
+    birthDate: '2018-12-05',
+    gender: 'FEMALE',
+    status: 'IN_SHELTER',
+    roomNumber: '10',
+    imageUrl: 'https://api.dicebear.com/8.x/lorelei/svg?seed=Nastya&backgroundColor=fce38a',
+    description: 'Нежная и заботливая девочка. Любит помогать взрослым, ухаживать за цветами. Мечтает о большой дружной семье.',
+    shortDescription: 'Нежная и добрая. Любит помогать взрослым и ухаживать за цветами.',
+  },
 ]
 
 const INITIAL_EVENTS = [
@@ -27,9 +103,33 @@ const INITIAL_NEEDS = [
 ]
 
 const INITIAL_ARTICLES = [
-  { id: 1, title: 'Как подготовиться к усыновлению', summary: 'Руководство по процессу усыновления', category: 'GUIDE', isPublished: true, publishedAt: '2026-05-01', content: 'Усыновление — серьёзный и ответственный шаг...' },
-  { id: 2, title: 'День открытых дверей — 15 июня', summary: 'Объявление о мероприятии', category: 'ANNOUNCEMENT', isPublished: true, publishedAt: '2026-04-28', content: 'Приглашаем всех желающих посетить наш детский дом.' },
-  { id: 3, title: 'Опека vs усыновление: в чём разница?', summary: 'Объясняем юридические различия', category: 'GUIDE', isPublished: true, publishedAt: '2026-04-10', content: 'Многие путают опеку и усыновление...' },
+  { 
+    id: 1, 
+    title: 'Как подготовиться к усыновлению', 
+    summary: 'Руководство по процессу усыновления', 
+    category: 'GUIDE', 
+    isPublished: true, 
+    publishedAt: '2026-05-01', 
+    content: 'Усыновление — серьёзный и ответственный шаг.\n\nПервое, что необходимо сделать будущим приемным родителям — это пройти Школу Приемных Родителей (ШПР). Там вы узнаете юридические, психологические и медицинские аспекты воспитания приемного ребенка.\n\nПосле получения сертификата ШПР необходимо собрать пакет документов для органов опеки, включая справки о доходах, отсутствии судимости и медицинское заключение.\n\nВажно помнить: адаптация ребенка в новой семье может занимать от нескольких месяцев до нескольких лет. Терпение и любовь — ваши главные помощники.'
+  },
+  { 
+    id: 2, 
+    title: 'День открытых дверей — 15 июня', 
+    summary: 'Объявление о мероприятии', 
+    category: 'ANNOUNCEMENT', 
+    isPublished: true, 
+    publishedAt: '2026-04-28', 
+    content: 'Приглашаем всех желающих посетить наш детский дом.\n\nВ программе мероприятия:\n1. Знакомство с условиями проживания детей.\n2. Выступление директора и специалистов центра.\n3. Ответы на вопросы будущих опекунов и волонтеров.\n4. Концерт, подготовленный воспитанниками ЦССВ.\n\nДля участия необходимо предварительно зарегистрироваться через наш сайт или по телефону горячей линии. При себе обязательно иметь паспорт.' 
+  },
+  { 
+    id: 3, 
+    title: 'Опека vs усыновление: в чём разница?', 
+    summary: 'Объясняем юридические различия', 
+    category: 'GUIDE', 
+    isPublished: true, 
+    publishedAt: '2026-04-10', 
+    content: 'Многие путают опеку и усыновление. Давайте разберем основные отличия.\n\nУсыновление:\n- Ребенок становится полноправным членом семьи со всеми правами (в том числе наследственными).\n- Родители могут изменить ФИО ребенка и дату его рождения.\n- Тайна усыновления охраняется законом.\n\nОпека (попечительство):\n- Опекун является законным представителем ребенка до его совершеннолетия.\n- Ребенок сохраняет свои изначальные ФИО.\n- Опекун получает пособие на содержание ребенка от государства.\n\nВыбор формы устройства зависит от статуса ребенка и возможностей кандидатов.'
+  },
 ]
 
 const INITIAL_VOLUNTEERS = [
@@ -40,13 +140,11 @@ const INITIAL_VOLUNTEERS = [
 
 // ── Экспортируемые стора ──────────────────────────────────────────────────────
 
-export const childrenStore = createStore<any>('admin_children', INITIAL_CHILDREN)
-export const eventsStore   = createStore<any>('admin_events',   INITIAL_EVENTS)
-export const needsStore    = createStore<any>('admin_needs',    INITIAL_NEEDS)
-export const articlesStore = createStore<any>('admin_articles', INITIAL_ARTICLES)
+export const childrenStore   = createStore<any>('admin_children',  INITIAL_CHILDREN)
+export const eventsStore     = createStore<any>('admin_events',    INITIAL_EVENTS)
+export const needsStore      = createStore<any>('admin_needs',     INITIAL_NEEDS)
+export const articlesStore   = createStore<any>('admin_articles',  INITIAL_ARTICLES)
 export const volunteersStore = createStore<any>('admin_volunteers', INITIAL_VOLUNTEERS)
 
 /** Заявки хранятся с привязкой к userId из Keycloak */
-export const requestsStore = createStore<any>('adoption_requests', [
-  { id: 1, userId: 'demo-user', applicantFirstName: 'Иван', applicantLastName: 'Иванов', applicantPhone: '+7 900 000-00-01', applicantEmail: 'ivan@mail.ru', requestType: 'ACQUAINTANCE', childId: 1, childName: 'Алёша', status: 'NEW', message: 'Хотели бы познакомиться.', adminComment: '', createdAt: '2026-05-01' },
-])
+export const requestsStore = createStore<any>('adoption_requests', [])
